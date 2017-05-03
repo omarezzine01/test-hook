@@ -23,7 +23,13 @@ MBMessage message = (MBMessage)request.getAttribute(WebKeys.MESSAGE_BOARDS_TREE_
 MBCategory category = (MBCategory)request.getAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_CATEGORY);
 MBThread thread = (MBThread)request.getAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_THREAD);
 boolean lastNode = ((Boolean)request.getAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_LAST_NODE)).booleanValue();
+boolean ratingsEnabled = ((Boolean)request.getAttribute("ratingsEnabled")).booleanValue();
+
 int depth = ((Integer)request.getAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_DEPTH)).intValue();
+int index = ((Integer)request.getAttribute("index")).intValue();
+
+String cssClass = (String)request.getAttribute("cssClass");
+String randomNamespace = (String)request.getAttribute("randomNamespace");
 
 %>
 
@@ -39,11 +45,11 @@ int depth = ((Integer)request.getAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_DE
 	request.setAttribute("edit-message.jsp-showRecentPosts", Boolean.TRUE);
 	request.setAttribute("edit_message.jsp-thread", thread);
 	request.setAttribute("cssClass", cssClass);
-
+	request.setAttribute("index", new Integer(index));
 
 	%>
 
-	<liferay-util:include page="/html/taglib/ui/discussion/view_thread_message.jspf" />
+	<liferay-util:include page="/html/taglib/ui/discussion/view_thread_message.jsp" />
 
 	<%
 	request.setAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_VIEWABLE_THREAD, Boolean.TRUE.toString());
@@ -57,7 +63,7 @@ int[] range = treeWalker.getChildrenRange(message);
 
 depth++;
 
-for (int ii = range[0]; ii < range[1]; i++) {
+for (int ii = range[0]; ii < range[1]; ii++) {
 	MBMessage curMessage = (MBMessage)messages.get(ii);
 
 	if (!MBUtil.isViewableMessage(themeDisplay, curMessage, message)) {
@@ -87,9 +93,10 @@ for (int ii = range[0]; ii < range[1]; i++) {
 	request.setAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_SEL_MESSAGE, selMessage);
 	request.setAttribute(WebKeys.MESSAGE_BOARDS_TREE_WALKER_THREAD, thread);
 	request.setAttribute("cssClass", cssClass);
+	request.setAttribute("index", ii);
 %>
 
-	<liferay-util:include page="/html/taglib/ui/discussion/view_thread_tree.jspf" />
+	<liferay-util:include page="/html/taglib/ui/discussion/view_thread_tree.jsp" />
 
 <%
 }
